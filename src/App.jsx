@@ -18,6 +18,7 @@ import MarketStatsPage from './pages/MarketStatsPage';
 import LearnPage from './pages/LearnPage';
 import CryptoBasicsPage from './pages/CryptoBasicsPage';
 import Loader from './components/ui/Loader';
+import DisclaimerBanner from './components/DisclaimerBanner';
 
 const Home = () => (
   <div className="min-h-screen flex flex-col">
@@ -45,18 +46,21 @@ const App = () => {
   if (loading) return <Loader />;
 
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/explore" element={<ExplorePage />} />
-      <Route path="/market-stats" element={<MarketStatsPage />} />
-      <Route path="/signin" element={<SignIn />} />
-      <Route path="/account-type" element={<AccountTypeSelect />} />
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/verify" element={<VerifyCode />} />
-      <Route path="/learn" element={<LearnPage />} />
-      <Route path="/learn/crypto-basics" element={<CryptoBasicsPage />} />
-    </Routes>
+    <>
+      <DisclaimerBanner />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/explore" element={<ExplorePage />} />
+        <Route path="/market-stats" element={<MarketStatsPage />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/account-type" element={<AccountTypeSelect />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/verify" element={<VerifyCode />} />
+        <Route path="/learn" element={<LearnPage />} />
+        <Route path="/learn/crypto-basics" element={<CryptoBasicsPage />} />
+      </Routes>
+    </>
   );
 };
 

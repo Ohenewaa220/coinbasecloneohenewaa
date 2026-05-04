@@ -238,6 +238,12 @@ const Footer = () => {
 					{/* Divider */}
 					<hr className="w-full border-0 border-t border-gray-15 my-2" />
 
+					<div className="w-full bg-[#1E2025] rounded-xl p-4 my-4 border border-[#2C2F36]">
+						<p className="text-[#8A919E] text-sm text-center">
+							<strong>Disclaimer:</strong> This is a demo student project and is not affiliated with, endorsed by, or connected to Coinbase or any other real cryptocurrency exchange. Please do not enter real personal information, passwords, or financial data.
+						</p>
+					</div>
+
 					{/* Copyright + legal + locale row */}
 					<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 						{/* Left: copyright + legal links */}

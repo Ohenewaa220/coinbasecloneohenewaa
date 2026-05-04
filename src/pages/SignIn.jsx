@@ -86,6 +86,9 @@ const SignIn = () => {
 					{step === 'email' && (
 						<form onSubmit={handleEmailContinue}>
 							<h1 className="text-[1.75rem] font-bold text-white mb-6">Sign in to Coinbase</h1>
+							<div className="bg-[#2C2F36] p-3 rounded text-[#F7931A] text-sm font-bold mb-4 text-center">
+								Demo app – do not use your real password
+							</div>
 
 							{/* Email field */}
 							<div className="mb-4">
@@ -149,6 +152,9 @@ const SignIn = () => {
 					{step === 'password' && (
 						<form onSubmit={handlePasswordContinue}>
 							<h1 className="text-[1.75rem] font-bold text-white mb-6">Sign in to Coinbase</h1>
+							<div className="bg-[#2C2F36] p-3 rounded text-[#F7931A] text-sm font-bold mb-4 text-center">
+								Demo app – do not use your real password
+							</div>
 
 							{/* Email display pill */}
 							<div className="flex items-center gap-3 w-full h-16 px-4 rounded-xl border border-[#2C2F36] bg-[#1E2025] mb-6">
