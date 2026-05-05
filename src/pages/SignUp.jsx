@@ -157,6 +157,7 @@ function AllSetStep({ onContinue }) {
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Logo from '../components/ui/Logo';
+import { registerUser } from '../api';
 
 /* ════════════════════════════════════════════════════
    Shared dark-page shell
@@ -372,7 +373,7 @@ const StepVerifyEmail = ({ email, onNext }) => {
 /* ════════════════════════════════════════════════════
    STEP 2 — Complete account setup (stepper)
    ════════════════════════════════════════════════════ */
-const StepAccountSetup = ({ onNext }) => {
+const StepAccountSetup = ({ email, password, setPassword, onSubmit, isSubmitting, errorMessage }) => {
 	const [agreed, setAgreed] = useState(true);
 
 	return (
@@ -388,6 +389,15 @@ const StepAccountSetup = ({ onNext }) => {
 			<p className="text-[0.9375rem] text-[#8A919E] mb-8 leading-6">
 				<a href="#" className="text-[#0052FF] underline">Regulations</a> requires us to collect and verify your information
 			</p>
+
+			<DarkInput
+				label="Password"
+				type="password"
+				value={password}
+				onChange={(e) => setPassword(e.target.value)}
+				placeholder="Create a password"
+				hint="Use at least 8 characters."
+			/>
 
 			{/* Stepper */}
 			<div className="flex flex-col gap-0 mb-8">
@@ -453,12 +463,16 @@ const StepAccountSetup = ({ onNext }) => {
 			</label>
 
 			<button
-				className="w-full max-w-xs py-3 rounded-full font-semibold text-lg bg-[#0052FF] hover:bg-[#1a5cff] text-white transition"
-				onClick={onNext}
-				disabled={!agreed}
+				className="w-full max-w-xs py-3 rounded-full font-semibold text-lg bg-[#0052FF] hover:bg-[#1a5cff] text-white transition disabled:opacity-60 disabled:cursor-not-allowed"
+				onClick={onSubmit}
+				disabled={!agreed || !password.trim() || isSubmitting}
 			>
-				Submit
+				{isSubmitting ? 'Creating account…' : 'Submit'}
 			</button>
+
+			{errorMessage && (
+				<div className="mt-4 text-sm text-[#FF6B6B] font-medium">{errorMessage}</div>
+			)}
 		</Shell>
 	);
 };
@@ -695,19 +709,49 @@ const StepVerifying = () => (
 const SignUp = () => {
 	const [step, setStep] = useState(0);
 	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
 	const [citizenship, setCitizenship] = useState('GH');
 	const [residence, setResidence] = useState('GH');
 	const [birthCity, setBirthCity] = useState('');
 	const [birthCountry, setBirthCountry] = useState('GH');
 	const [addressFile, setAddressFile] = useState(null);
+	const [isRegistering, setIsRegistering] = useState(false);
+	const [registerError, setRegisterError] = useState('');
 
 	const next = () => setStep((s) => s + 1);
 	const back = () => setStep((s) => Math.max(0, s - 1));
 
+	const handleRegister = async () => {
+		setRegisterError('');
+		if (!email.trim() || !password.trim()) {
+			setRegisterError('Please enter a valid email and password.');
+			return;
+		}
+
+		setIsRegistering(true);
+		try {
+			await registerUser({ email, password });
+			next();
+		} catch (error) {
+			setRegisterError(error.message || 'Registration failed.');
+		} finally {
+			setIsRegistering(false);
+		}
+	};
+
 	switch (step) {
 		case 0: return <StepEmail email={email} setEmail={setEmail} onNext={next} />;
 		case 1: return <StepVerifyEmail email={email} onNext={next} />;
-		case 2: return <StepAccountSetup onNext={next} />;
+		case 2: return (
+			<StepAccountSetup
+				email={email}
+				password={password}
+				setPassword={setPassword}
+				onSubmit={handleRegister}
+				isSubmitting={isRegistering}
+				errorMessage={registerError}
+			/>
+		);
 		case 3: return <StepEmailOptIn onNext={next} />;
 		case 4: return <StepCountry citizenship={citizenship} setCitizenship={setCitizenship} residence={residence} setResidence={setResidence} onNext={next} />;
 		case 5: return <StepBirth city={birthCity} setCity={setBirthCity} country={birthCountry} setCountry={setBirthCountry} onNext={next} />;

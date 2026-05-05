@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../components/ui/Logo';
+import { loginUser } from '../api';
 
 /* ── Icons ── */
 const PasskeyIcon = () => (
@@ -57,6 +58,8 @@ const SignIn = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
+	const [errorMessage, setErrorMessage] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
 	const navigate = useNavigate();
 
 	const handleEmailContinue = (e) => {
@@ -64,10 +67,23 @@ const SignIn = () => {
 		if (email.trim()) setStep('password');
 	};
 
-	const handlePasswordContinue = (e) => {
+	const handlePasswordContinue = async (e) => {
 		e.preventDefault();
-		// No backend — navigate to verify code page
-		navigate('/verify', { state: { email } });
+		setErrorMessage('');
+		if (!email.trim() || !password.trim()) {
+			setErrorMessage('Please enter both email and password.');
+			return;
+		}
+		setIsLoading(true);
+		try {
+			const result = await loginUser({ email, password });
+			console.log('Login success:', result);
+			navigate('/verify', { state: { email } });
+		} catch (error) {
+			setErrorMessage(error.message || 'Login failed');
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	return (
